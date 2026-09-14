@@ -16,4 +16,11 @@ def test_response_from_server():
     response = requests.get("https://reqres.in/api")
     print(response)
 
-test_response_from_server()
+def test_get_user():
+    response = requests.get("https://reqres.in/api/users/2")
+    assert response.status_code == 200
+    data = response.json().get("data")
+    assert data.get("id") == 2
+    assert "email" in data
+    assert "first_name" in data
+    assert "last_name" in data
