@@ -4,3 +4,6 @@
 
 Реализованые методы:
 - [x] GET /api/users/2
+- [x] GET /api/users?page=2
+- [x] GET /api/unknown
+- [x] GET /api/products?page=1
