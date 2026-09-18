@@ -58,3 +58,34 @@ def test_get_products():
     assert "color" in data[3]
     assert "pantone_value" in data[4]
 
+def test_get_single_product():
+    response = requests.get("https://reqres.in/api/products/2")
+    assert response.status_code == 200
+    data = response.json().get("data")
+    assert data.get("id") == 2
+    assert "name" in data
+    assert "year" in data
+    assert "color" in data
+    assert "pantone_value" in data
+
+## POST requests
+def test_post_register_success():
+    payload = {
+        "email": "eve.holt@reqres.in",
+        "password": "pistol"
+    }
+    response = requests.post("https://reqres.in/api/register", json=payload)
+    assert response.status_code == 200
+    data = response.json().get("data")
+    assert "id" in data
+    assert "token" in data
+
+def test_post_login_success():
+    payload = {
+        "email": "eve.holt@reqres.in",
+        "password": "cityslicka"
+    }
+    response = requests.post("https://reqres.in/api/login", json=payload)
+    assert response.status_code == 200
+    data = response.json().get("data")
+    assert "token" in data

@@ -13,6 +13,8 @@
 
 ### POST методы
 
+- [x] POST /api/register
+- [x] POST /api/login
 
 ### PUT методы
 
