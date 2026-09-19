@@ -18,6 +18,8 @@
 
 ### PUT методы
 
+- [x] PUT /api/users/2
+
 ### PATCH методы
 
 ### DELETE методы

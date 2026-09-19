@@ -89,3 +89,17 @@ def test_post_login_success():
     assert response.status_code == 200
     data = response.json().get("data")
     assert "token" in data
+
+def test_put_update_user():
+    payload = {
+        "email": "morpheus",
+        "job": "zion resident"
+    }
+    response = requests.put("https://reqres.in/api/users/2")
+    assert response.status_code == 200
+    data = response.json().get("data")
+    assert "id" in data
+    assert "email" in data
+    assert "first_name" in data
+    assert "last_name" in data
+    assert "avatar" in data
