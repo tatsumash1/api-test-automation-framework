@@ -103,3 +103,7 @@ def test_put_update_user():
     assert "first_name" in data
     assert "last_name" in data
     assert "avatar" in data
+
+def test_delete_user():
+    response = requests.delete("https://reqres.in/api/users/2")
+    assert response.status_code == 204

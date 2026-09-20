@@ -23,3 +23,5 @@
 ### PATCH методы
 
 ### DELETE методы
+
+- [x] DELETE /api/users/2
