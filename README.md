@@ -25,3 +25,20 @@
 ### DELETE методы
 
 - [x] DELETE /api/users/2
+
+## Запуск тестов
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -v
+```
+
+Часть актуальных эндпоинтов ReqRes требует API-ключ. Ключ не должен храниться
+в репозитории: перед запуском передайте его через переменную окружения.
+
+```powershell
+$env:REQRES_API_KEY = "ваш-api-ключ"
+.\.venv\Scripts\python.exe -m pytest -v
+```
+
+Без `REQRES_API_KEY` защищённые тесты `/api/products` будут отмечены как
+пропущенные (`skipped`), а остальные тесты продолжат выполняться.

@@ -1,23 +1,38 @@
+import os
+
+import pytest
 import requests
 
-#GET /api/users/2
-"""
-HTTP status == 200
 
-data.id == 2
+BASE_URL = "https://reqres.in/api"
+REQUEST_TIMEOUT = 10
 
-data.email существует
 
-data.first_name существует
+def api_headers():
+    api_key = os.getenv("REQRES_API_KEY")
+    return {"x-api-key": api_key} if api_key else {}
 
-data.last_name существует
-"""
+
+def request(method, path, **kwargs):
+    return requests.request(
+        method,
+        f"{BASE_URL}{path}",
+        headers=api_headers(),
+        timeout=REQUEST_TIMEOUT,
+        **kwargs,
+    )
+
+
+def require_api_key():
+    if not os.getenv("REQRES_API_KEY"):
+        pytest.skip("REQRES_API_KEY is required for this endpoint")
+
 def test_response_from_server():
-    response = requests.get("https://reqres.in/api")
-    print(response)
+    response = request("GET", "/users/2")
+    assert response.status_code == 200
 
 def test_get_single_user():
-    response = requests.get("https://reqres.in/api/users/2")
+    response = request("GET", "/users/2")
     assert response.status_code == 200
     data = response.json().get("data")
     assert data.get("id") == 2
@@ -26,7 +41,7 @@ def test_get_single_user():
     assert "last_name" in data
 
 def test_get_user():
-    response = requests.get("https://reqres.in/api/users?page=2")
+    response = request("GET", "/users?page=2")
     assert response.status_code == 200
     data = response.json().get("data")
     assert len(data) > 0
@@ -37,7 +52,7 @@ def test_get_user():
     assert "avatar" in data[4]
 
 def test_get_list_resources():
-    response = requests.get("https://reqres.in/api/unknown")
+    response = request("GET", "/unknown")
     assert response.status_code == 200
     data = response.json().get("data")
     assert len(data) > 0
@@ -48,7 +63,8 @@ def test_get_list_resources():
     assert "pantone_value" in data[4]
 
 def test_get_products():
-    response = requests.get("https://reqres.in/api/products?page=1")
+    require_api_key()
+    response = request("GET", "/products?page=1")
     assert response.status_code == 200
     data = response.json().get("data")
     assert len(data) > 0
@@ -59,7 +75,8 @@ def test_get_products():
     assert "pantone_value" in data[4]
 
 def test_get_single_product():
-    response = requests.get("https://reqres.in/api/products/2")
+    require_api_key()
+    response = request("GET", "/products/2")
     assert response.status_code == 200
     data = response.json().get("data")
     assert data.get("id") == 2
@@ -74,9 +91,9 @@ def test_post_register_success():
         "email": "eve.holt@reqres.in",
         "password": "pistol"
     }
-    response = requests.post("https://reqres.in/api/register", json=payload)
+    response = request("POST", "/register", json=payload)
     assert response.status_code == 200
-    data = response.json().get("data")
+    data = response.json()
     assert "id" in data
     assert "token" in data
 
@@ -85,25 +102,23 @@ def test_post_login_success():
         "email": "eve.holt@reqres.in",
         "password": "cityslicka"
     }
-    response = requests.post("https://reqres.in/api/login", json=payload)
+    response = request("POST", "/login", json=payload)
     assert response.status_code == 200
-    data = response.json().get("data")
+    data = response.json()
     assert "token" in data
 
 def test_put_update_user():
     payload = {
-        "email": "morpheus",
+        "name": "morpheus",
         "job": "zion resident"
     }
-    response = requests.put("https://reqres.in/api/users/2")
+    response = request("PUT", "/users/2", json=payload)
     assert response.status_code == 200
-    data = response.json().get("data")
-    assert "id" in data
-    assert "email" in data
-    assert "first_name" in data
-    assert "last_name" in data
-    assert "avatar" in data
+    data = response.json()
+    assert data["name"] == payload["name"]
+    assert data["job"] == payload["job"]
+    assert "updatedAt" in data
 
 def test_delete_user():
-    response = requests.delete("https://reqres.in/api/users/2")
+    response = request("DELETE", "/users/2")
     assert response.status_code == 204
