@@ -123,7 +123,7 @@ def test_delete_user():
     response = request("DELETE", "/users/2")
     assert response.status_code == 204
 
-def test_patch_update_user():
+def test_patch_update_user_name():
     payload = {
         "name": "morpheus"
     }
@@ -131,4 +131,26 @@ def test_patch_update_user():
     assert response.status_code == 200
     data = response.json()
     assert data["name"] == payload["name"]
+    assert "updatedAt" in data
+
+def test_patch_update_user_job():
+    payload = {
+        "job": "zion resident"
+    }
+    response = request("PATCH", "/users/2", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["job"] == payload["job"]
+    assert "updatedAt" in data
+
+def test_patch_update_user_name_and_job():
+    payload = {
+        "name": "morpheus",
+        "job": "zion resident"
+    }
+    response = request("PATCH", "/users/2", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["name"] == payload["name"]
+    assert data["job"] == payload["job"]
     assert "updatedAt" in data

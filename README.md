@@ -22,7 +22,9 @@
 
 ### PATCH методы
 
-- [x] PATCH /api/users/2
+- [x] PATCH /api/users/2 (тест на обновление только name)
+- [x] PATCH /api/users/2 (тест на обновление только job)
+- [x] PATCH /api/users/2 (тест на обновление name и job)
 
 ### DELETE методы
 
