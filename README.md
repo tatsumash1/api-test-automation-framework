@@ -46,3 +46,9 @@ $env:REQRES_API_KEY = "ваш-api-ключ"
 
 Без `REQRES_API_KEY` защищённые тесты `/api/products` будут отмечены как
 пропущенные (`skipped`), а остальные тесты продолжат выполняться.
+
+Проверка установки апи-ключа:
+
+```powershell
+if ($env:REQRES_API_KEY) { "API key установлен" } else { "API key отсутствует" }
+```
