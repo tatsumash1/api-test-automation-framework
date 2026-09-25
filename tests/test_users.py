@@ -154,3 +154,23 @@ def test_patch_update_user_name_and_job():
     assert data["name"] == payload["name"]
     assert data["job"] == payload["job"]
     assert "updatedAt" in data
+
+#Негативные тесты
+
+def test_post_register_unsuccessful():
+    payload = {
+        "email": "sydney@fife"
+    }
+    response = request("POST", "/register", json=payload)
+    assert response.status_code == 400
+    data = response.json()
+    assert "error" in data
+
+def test_post_login_unsuccessful():
+    payload = {
+        "email": "peter@klaven"
+    }
+    response = request("POST", "/login", json=payload)
+    assert response.status_code == 400
+    data = response.json()
+    assert "error" in data
