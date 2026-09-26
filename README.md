@@ -8,7 +8,9 @@
 
 - [x] GET /api/users/{user_id} - тест на получение пользователя по id (метод параметризован)
 - [x] GET /api/unknown
-- [x] GET /api/products?page=1
+- [x] GET /api/user?page={page_id} - тест на получение списка пользователей (метод параметризирован)
+- [x] GET /api/products/{product_id} - тест на получение товара по id (метод параметризован)
+- [x] GET /api/products?page={p_page_id} - тест на получение списка продуктов (метод параметризован)
 
 ### POST методы
 

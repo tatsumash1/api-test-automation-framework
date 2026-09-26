@@ -27,6 +27,10 @@ def require_api_key():
     if not os.getenv("REQRES_API_KEY"):
         pytest.skip("REQRES_API_KEY is required for this endpoint")
 
+def test_response_from_server():
+    response = request("GET", "/users/2")
+    assert response.status_code == 200
+
 @pytest.mark.parametrize("user_id", [1, 2, 3, 4, 5])
 def test_get_user(user_id):
     response = request("GET", f"/users/{user_id}")
@@ -37,21 +41,9 @@ def test_get_user(user_id):
     assert "first_name" in data
     assert "last_name" in data
 
-def test_response_from_server():
-    response = request("GET", "/users/2")
-    assert response.status_code == 200
-
-def test_get_single_user():
-    response = request("GET", "/users/2")
-    assert response.status_code == 200
-    data = response.json().get("data")
-    assert data.get("id") == 2
-    assert "email" in data
-    assert "first_name" in data
-    assert "last_name" in data
-
-def test_get_user_2():
-    response = request("GET", "/users?page=2")
+@pytest.mark.parametrize("page_id", [1, 2, 3])
+def test_get_user_list(page_id):
+    response = request("GET", f"/users?page={page_id}")
     assert response.status_code == 200
     data = response.json().get("data")
     assert len(data) > 0
@@ -72,9 +64,10 @@ def test_get_list_resources():
     assert "color" in data[3]
     assert "pantone_value" in data[4]
 
-def test_get_products():
+@pytest.mark.parametrize("p_page_id", [1, 2, 3, 4, 5])
+def test_get_product_list(p_page_id):
     require_api_key()
-    response = request("GET", "/products?page=1")
+    response = request("GET", f"/products?page={p_page_id}")
     assert response.status_code == 200
     data = response.json().get("data")
     assert len(data) > 0
@@ -84,9 +77,10 @@ def test_get_products():
     assert "color" in data[3]
     assert "pantone_value" in data[4]
 
-def test_get_single_product():
+@pytest.mark.parametrize("product_id", [1, 2, 3, 4, 5])
+def test_get_product(product_id):
     require_api_key()
-    response = request("GET", "/products/2")
+    response = request("GET", f"/products/{product_id}")
     assert response.status_code == 200
     data = response.json().get("data")
     assert data.get("id") == 2
