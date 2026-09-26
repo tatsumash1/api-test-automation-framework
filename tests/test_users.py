@@ -27,6 +27,16 @@ def require_api_key():
     if not os.getenv("REQRES_API_KEY"):
         pytest.skip("REQRES_API_KEY is required for this endpoint")
 
+@pytest.mark.parametrize("user_id", [1, 2, 3, 4, 5])
+def test_get_user(user_id):
+    response = request("GET", f"/users/{user_id}")
+    assert response.status_code == 200
+    data = response.json().get("data")
+    assert data["id"] == user_id
+    assert "email" in data
+    assert "first_name" in data
+    assert "last_name" in data
+
 def test_response_from_server():
     response = request("GET", "/users/2")
     assert response.status_code == 200
@@ -40,7 +50,7 @@ def test_get_single_user():
     assert "first_name" in data
     assert "last_name" in data
 
-def test_get_user():
+def test_get_user_2():
     response = request("GET", "/users?page=2")
     assert response.status_code == 200
     data = response.json().get("data")

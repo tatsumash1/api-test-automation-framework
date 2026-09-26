@@ -6,8 +6,7 @@
 
 ### GET методы
 
-- [x] GET /api/users/2
-- [x] GET /api/users?page=2
+- [x] GET /api/users/{user_id} - тест на получение пользователя по id (метод параметризован)
 - [x] GET /api/unknown
 - [x] GET /api/products?page=1
 
