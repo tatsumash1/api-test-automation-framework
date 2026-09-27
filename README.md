@@ -14,12 +14,12 @@
 
 ### POST методы
 
-- [x] POST /api/register
-- [x] POST /api/login
+- [x] POST /api/register - тест на регистрацию пользователя
+- [x] POST /api/login - тест на успешный логин
 
 ### PUT методы
 
-- [x] PUT /api/users/2
+- [x] PUT /api/users/2 - тест на полное изменение пользователя
 
 ### PATCH методы
 
@@ -34,6 +34,8 @@
 ## Реализованые негативные методы:
 
 ### GET методы
+
+- [x] GET /api/users/2500
 
 ### POST методы
 

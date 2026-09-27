@@ -111,6 +111,7 @@ def test_post_login_success():
     data = response.json()
     assert "token" in data
 
+# PUT request
 def test_put_update_user():
     payload = {
         "name": "morpheus",
@@ -123,10 +124,12 @@ def test_put_update_user():
     assert data["job"] == payload["job"]
     assert "updatedAt" in data
 
+# DELETE request
 def test_delete_user():
     response = request("DELETE", "/users/2")
     assert response.status_code == 204
 
+# PATCH requests
 def test_patch_update_user_name():
     payload = {
         "name": "morpheus"
@@ -160,6 +163,10 @@ def test_patch_update_user_name_and_job():
     assert "updatedAt" in data
 
 #Негативные тесты
+def test_get_invalid_user():
+    response = request("GET", "/users/2500")
+    assert response.status_code == 404
+
 
 def test_post_register_unsuccessful():
     payload = {
