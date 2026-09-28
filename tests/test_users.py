@@ -4,7 +4,6 @@ import pytest
 import requests
 
 
-BASE_URL = "https://reqres.in/api"
 REQUEST_TIMEOUT = 10
 
 
@@ -13,10 +12,10 @@ def api_headers():
     return {"x-api-key": api_key} if api_key else {}
 
 
-def request(method, path, **kwargs):
+def request(method, path, base_url, **kwargs):
     return requests.request(
         method,
-        f"{BASE_URL}{path}",
+        f"{base_url}{path}",
         headers=api_headers(),
         timeout=REQUEST_TIMEOUT,
         **kwargs,
@@ -27,13 +26,13 @@ def require_api_key():
     if not os.getenv("REQRES_API_KEY"):
         pytest.skip("REQRES_API_KEY is required for this endpoint")
 
-def test_response_from_server():
-    response = request("GET", "/users/2")
+def test_response_from_server(base_url):
+    response = request("GET", "/users/2", base_url=base_url)
     assert response.status_code == 200
 
 @pytest.mark.parametrize("user_id", [1, 2, 3, 4, 5])
-def test_get_user(user_id):
-    response = request("GET", f"/users/{user_id}")
+def test_get_user(user_id, base_url):
+    response = request("GET", f"/users/{user_id}", base_url=base_url)
     assert response.status_code == 200
     data = response.json().get("data")
     assert data["id"] == user_id
@@ -42,8 +41,8 @@ def test_get_user(user_id):
     assert "last_name" in data
 
 @pytest.mark.parametrize("page_id", [1, 2, 3])
-def test_get_user_list(page_id):
-    response = request("GET", f"/users?page={page_id}")
+def test_get_user_list(page_id, base_url):
+    response = request("GET", f"/users?page={page_id}", base_url=base_url)
     assert response.status_code == 200
     data = response.json().get("data")
     assert len(data) > 0
@@ -53,8 +52,8 @@ def test_get_user_list(page_id):
     assert "last_name" in data[3]
     assert "avatar" in data[4]
 
-def test_get_list_resources():
-    response = request("GET", "/unknown")
+def test_get_list_resources(base_url):
+    response = request("GET", f"/unknown", base_url=base_url)
     assert response.status_code == 200
     data = response.json().get("data")
     assert len(data) > 0
