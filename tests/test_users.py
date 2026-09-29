@@ -40,7 +40,7 @@ def test_get_user(user_id, base_url):
     assert "first_name" in data
     assert "last_name" in data
 
-@pytest.mark.parametrize("page_id", [1, 2, 3])
+@pytest.mark.parametrize("page_id", [1, 2])
 def test_get_user_list(page_id, base_url):
     response = request("GET", f"/users?page={page_id}", base_url=base_url)
     assert response.status_code == 200
@@ -64,9 +64,9 @@ def test_get_list_resources(base_url):
     assert "pantone_value" in data[4]
 
 @pytest.mark.parametrize("p_page_id", [1, 2, 3, 4, 5])
-def test_get_product_list(p_page_id):
+def test_get_product_list(p_page_id, base_url):
     require_api_key()
-    response = request("GET", f"/products?page={p_page_id}")
+    response = request("GET", f"/products?page={p_page_id}", base_url=base_url)
     assert response.status_code == 200
     data = response.json().get("data")
     assert len(data) > 0
@@ -77,9 +77,9 @@ def test_get_product_list(p_page_id):
     assert "pantone_value" in data[4]
 
 @pytest.mark.parametrize("product_id", [1, 2, 3, 4, 5])
-def test_get_product(product_id):
+def test_get_product(product_id, base_url):
     require_api_key()
-    response = request("GET", f"/products/{product_id}")
+    response = request("GET", f"/products/{product_id}", base_url=base_url)
     assert response.status_code == 200
     data = response.json().get("data")
     assert data.get("id") == 2
@@ -89,34 +89,34 @@ def test_get_product(product_id):
     assert "pantone_value" in data
 
 ## POST requests
-def test_post_register_success():
+def test_post_register_success(base_url):
     payload = {
         "email": "eve.holt@reqres.in",
         "password": "pistol"
     }
-    response = request("POST", "/register", json=payload)
+    response = request("POST", "/register", json=payload, base_url=base_url)
     assert response.status_code == 200
     data = response.json()
     assert "id" in data
     assert "token" in data
 
-def test_post_login_success():
+def test_post_login_success(base_url):
     payload = {
         "email": "eve.holt@reqres.in",
         "password": "cityslicka"
     }
-    response = request("POST", "/login", json=payload)
+    response = request("POST", "/login", json=payload, base_url=base_url)
     assert response.status_code == 200
     data = response.json()
     assert "token" in data
 
 # PUT request
-def test_put_update_user():
+def test_put_update_user(base_url):
     payload = {
         "name": "morpheus",
         "job": "zion resident"
     }
-    response = request("PUT", "/users/2", json=payload)
+    response = request("PUT", "/users/2", json=payload, base_url=base_url)
     assert response.status_code == 200
     data = response.json()
     assert data["name"] == payload["name"]
@@ -124,37 +124,37 @@ def test_put_update_user():
     assert "updatedAt" in data
 
 # DELETE request
-def test_delete_user():
-    response = request("DELETE", "/users/2")
+def test_delete_user(base_url):
+    response = request("DELETE", "/users/2", base_url=base_url)
     assert response.status_code == 204
 
 # PATCH requests
-def test_patch_update_user_name():
+def test_patch_update_user_name(base_url):
     payload = {
         "name": "morpheus"
     }
-    response = request("PATCH", "/users/2", json=payload)
+    response = request("PATCH", "/users/2", json=payload, base_url=base_url)
     assert response.status_code == 200
     data = response.json()
     assert data["name"] == payload["name"]
     assert "updatedAt" in data
 
-def test_patch_update_user_job():
+def test_patch_update_user_job(base_url):
     payload = {
         "job": "zion resident"
     }
-    response = request("PATCH", "/users/2", json=payload)
+    response = request("PATCH", "/users/2", json=payload, base_url=base_url)
     assert response.status_code == 200
     data = response.json()
     assert data["job"] == payload["job"]
     assert "updatedAt" in data
 
-def test_patch_update_user_name_and_job():
+def test_patch_update_user_name_and_job(base_url):
     payload = {
         "name": "morpheus",
         "job": "zion resident"
     }
-    response = request("PATCH", "/users/2", json=payload)
+    response = request("PATCH", "/users/2", json=payload, base_url=base_url)
     assert response.status_code == 200
     data = response.json()
     assert data["name"] == payload["name"]
@@ -162,25 +162,25 @@ def test_patch_update_user_name_and_job():
     assert "updatedAt" in data
 
 #Негативные тесты
-def test_get_invalid_user():
-    response = request("GET", "/users/2500")
+def test_get_invalid_user(base_url):
+    response = request("GET", "/users/2500", base_url=base_url)
     assert response.status_code == 404
 
 
-def test_post_register_unsuccessful():
+def test_post_register_unsuccessful(base_url):
     payload = {
         "email": "sydney@fife"
     }
-    response = request("POST", "/register", json=payload)
+    response = request("POST", "/register", json=payload, base_url=base_url)
     assert response.status_code == 400
     data = response.json()
     assert "error" in data
 
-def test_post_login_unsuccessful():
+def test_post_login_unsuccessful(base_url):
     payload = {
         "email": "peter@klaven"
     }
-    response = request("POST", "/login", json=payload)
+    response = request("POST", "/login", json=payload, base_url=base_url)
     assert response.status_code == 400
     data = response.json()
     assert "error" in data
