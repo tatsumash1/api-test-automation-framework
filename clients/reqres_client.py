@@ -1,14 +1,12 @@
-import requests
-
-
 class ReqresClient:
-    def __init__(self, base_url, api_key=None, timeout=10):
+    def __init__(self, base_url, session, api_key=None, timeout=10):
         self.base_url = base_url
+        self.session = session
         self.timeout = timeout
         self.headers = {"x-api-key": api_key} if api_key else {}
 
     def _request(self, method, path, **kwargs):
-        return requests.request(
+        return self.session.request(
             method,
             f"{self.base_url}{path}",
             headers=self.headers,
