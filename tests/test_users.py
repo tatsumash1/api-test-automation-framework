@@ -1,15 +1,18 @@
 import pytest
+from jsonschema import validate
+from schemas.user_schemas import USER_SCHEMA
 
 
 @pytest.mark.parametrize("user_id", [1, 2, 3, 4, 5])
 def test_get_user(user_id, reqres_client):
     response = reqres_client.get_user(user_id)
+
     assert response.status_code == 200
+
     data = response.json()["data"]
+    validate(data, USER_SCHEMA)
+
     assert data["id"] == user_id
-    assert "email" in data
-    assert "first_name" in data
-    assert "last_name" in data
 
 
 @pytest.mark.parametrize("page_id", [1, 2])
