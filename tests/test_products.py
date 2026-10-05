@@ -1,4 +1,6 @@
 import os
+from jsonschema import validate
+from schemas.products_schemas import PRODUCT_SCHEMA, PRODUCT_LIST_SCHEMA
 
 import pytest
 
@@ -10,42 +12,32 @@ def require_api_key():
 
 def test_get_list_resources(reqres_client):
     response = reqres_client.get_resources()
+
     assert response.status_code == 200
+
     data = response.json()["data"]
-    assert data
-
-    for resource in data:
-        assert "id" in resource
-        assert "name" in resource
-        assert "year" in resource
-        assert "color" in resource
-        assert "pantone_value" in resource
-
+    validate(instance=data, schema=PRODUCT_LIST_SCHEMA)
 
 @pytest.mark.parametrize("page_id", [1, 2, 3, 4, 5])
 def test_get_product_list(page_id, reqres_client):
     require_api_key()
     response = reqres_client.get_products(page_id)
-    assert response.status_code == 200
-    data = response.json()["data"]
-    assert data
 
-    for product in data:
-        assert "id" in product
-        assert "name" in product
-        assert "year" in product
-        assert "color" in product
-        assert "pantone_value" in product
+    assert response.status_code == 200
+
+    data = response.json()["data"]
+
+    validate(instance=data, schema=PRODUCT_LIST_SCHEMA)
 
 
 @pytest.mark.parametrize("product_id", [1, 2, 3, 4, 5])
 def test_get_product(product_id, reqres_client):
     require_api_key()
     response = reqres_client.get_product(product_id)
+
     assert response.status_code == 200
+
     data = response.json()["data"]
     assert data["id"] == product_id
-    assert "name" in data
-    assert "year" in data
-    assert "color" in data
-    assert "pantone_value" in data
+
+    validate(instance=data, schema=PRODUCT_SCHEMA)

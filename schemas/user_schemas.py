@@ -25,3 +25,9 @@ USER_SCHEMA = {
         },
     },
 }
+
+USER_LIST_SCHEMA = {
+    "type": "array",
+    "minItems": 1,
+    "items": USER_SCHEMA,
+}

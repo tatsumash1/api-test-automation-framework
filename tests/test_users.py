@@ -1,6 +1,6 @@
 import pytest
 from jsonschema import validate
-from schemas.user_schemas import USER_SCHEMA
+from schemas.user_schemas import USER_SCHEMA, USER_LIST_SCHEMA
 
 
 @pytest.mark.parametrize("user_id", [1, 2, 3, 4, 5])
@@ -10,7 +10,7 @@ def test_get_user(user_id, reqres_client):
     assert response.status_code == 200
 
     data = response.json()["data"]
-    validate(data, USER_SCHEMA)
+    validate(instance=data, schema=USER_SCHEMA)
 
     assert data["id"] == user_id
 
@@ -18,17 +18,11 @@ def test_get_user(user_id, reqres_client):
 @pytest.mark.parametrize("page_id", [1, 2])
 def test_get_user_list(page_id, reqres_client):
     response = reqres_client.get_users(page_id)
+
     assert response.status_code == 200
+
     data = response.json()["data"]
-    assert data
-
-    for user in data:
-        assert "id" in user
-        assert "email" in user
-        assert "first_name" in user
-        assert "last_name" in user
-        assert "avatar" in user
-
+    validate(instance=data, schema=USER_LIST_SCHEMA)
 
 def test_put_update_user(reqres_client):
     payload = {
