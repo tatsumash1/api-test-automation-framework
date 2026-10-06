@@ -35,3 +35,27 @@ def test_post_login_unsuccessful(reqres_client):
     assert response.status_code == 400
     data = response.json()
     assert "error" in data
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {},
+        {"email": "sydney@fife"},
+        {"password": "pistol"},
+        {"email": "", "password": ""},
+    ],
+    ids=[
+        "empty_payload",
+        "missing_password",
+        "missing_email",
+        "empty_email_and_password",
+    ],
+)
+def test_register_with_invalid_data(reqres_client, payload):
+    response = reqres_client.register(payload)
+
+    assert response.status_code == 400
+
+    data = response.json()
+    assert "error" in data
+    assert isinstance(data["error"], str)
