@@ -28,6 +28,5 @@ PRODUCT_SCHEMA = {
 
 PRODUCT_LIST_SCHEMA = {
     "type": "array",
-    "minItems": 1,
     "items": PRODUCT_SCHEMA
 }
