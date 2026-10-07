@@ -1,3 +1,5 @@
+import pytest
+
 def test_post_register_success(reqres_client):
     payload = {
         "email": "eve.holt@reqres.in",
