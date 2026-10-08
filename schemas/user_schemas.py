@@ -31,3 +31,39 @@ USER_LIST_SCHEMA = {
     "minItems": 1,
     "items": USER_SCHEMA,
 }
+
+USER_PUT_SCHEMA = {
+    "type": "object",
+    "required": [
+        "name",
+        "job",
+        "updatedAt",
+    ],
+    "properties":{
+        "name": {
+            "type": "string",
+        },
+        "job": {
+            "type": "string",
+        },
+        "updatedAt": {
+            "type": "string",
+        },
+    },
+}
+
+USER_PATCH_SCHEMA = {
+    "type": "object",
+    "required": [
+        "name",
+        "updatedAt",
+    ],
+    "properties":{
+        "name": {
+            "type": "string",
+        },
+        "updatedAt": {
+            "type": "string",
+        },
+    },
+}
