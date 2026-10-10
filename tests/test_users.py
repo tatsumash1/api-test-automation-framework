@@ -1,6 +1,6 @@
 import pytest
 from jsonschema import validate
-from schemas.user_schemas import USER_SCHEMA, USER_LIST_SCHEMA, USER_PUT_SCHEMA, USER_PATCH_SCHEMA
+from schemas.user_schemas import USER_SCHEMA, USER_LIST_SCHEMA, USER_PUT_SCHEMA, USER_PATCH_NAME_SCHEMA, USER_PATCH_JOB_SCHEMA, USER_PATCH_NAME_AND_JOB_SCHEMA
 
 
 @pytest.mark.parametrize("user_id", [1, 2, 3, 4, 5])
@@ -54,7 +54,7 @@ def test_patch_update_user_name(reqres_client):
 
     data = response.json()
 
-    validate(instance=data, schema=USER_PATCH_SCHEMA)
+    validate(instance=data, schema=USER_PATCH_NAME_SCHEMA)
 
     assert data["name"] == payload["name"]
     assert "updatedAt" in data
@@ -62,8 +62,13 @@ def test_patch_update_user_name(reqres_client):
 def test_patch_update_user_job(reqres_client):
     payload = {"job": "zion resident"}
     response = reqres_client.patch_user(2, payload)
+
     assert response.status_code == 200
+
     data = response.json()
+
+    validate(instance=data, schema=USER_PATCH_JOB_SCHEMA)
+
     assert data["job"] == payload["job"]
     assert "updatedAt" in data
 
@@ -73,8 +78,13 @@ def test_patch_update_user_name_and_job(reqres_client):
         "job": "zion resident",
     }
     response = reqres_client.patch_user(2, payload)
+
     assert response.status_code == 200
+
     data = response.json()
+
+    validate(instance=data, schema=USER_PATCH_NAME_AND_JOB_SCHEMA)
+    
     assert data["name"] == payload["name"]
     assert data["job"] == payload["job"]
     assert "updatedAt" in data

@@ -52,7 +52,7 @@ USER_PUT_SCHEMA = {
     },
 }
 
-USER_PATCH_SCHEMA = {
+USER_PATCH_NAME_SCHEMA = {
     "type": "object",
     "required": [
         "name",
@@ -64,6 +64,42 @@ USER_PATCH_SCHEMA = {
         },
         "updatedAt": {
             "type": "string",
+        },
+    },
+}
+
+USER_PATCH_JOB_SCHEMA = {
+    "type": "object",
+    "required": [
+        "job",
+        "updatedAt"
+    ],
+    "properties": {
+        "job": {
+            "type": "string"
+        },
+        "updatedAt": {
+            "type": "string"
+        },
+    },
+}
+
+USER_PATCH_NAME_AND_JOB_SCHEMA = {
+    "type": "object",
+    "required": [
+        "name",
+        "job",
+        "updatedAt"
+    ],
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "job": {
+            "type": "string"
+        },
+        "updatedAt": {
+            "type": "string"
         },
     },
 }
