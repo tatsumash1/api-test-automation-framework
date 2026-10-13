@@ -25,6 +25,7 @@ def test_get_user_list(page_id, reqres_client):
     validate(instance=data, schema=USER_LIST_SCHEMA)
 
 @pytest.mark.users
+@pytest.mark.smoke
 def test_put_update_user(reqres_client):
     payload = {
         "name": "morpheus",
@@ -43,12 +44,14 @@ def test_put_update_user(reqres_client):
     assert data["job"] == payload["job"]
 
 @pytest.mark.users
+@pytest.mark.smoke
 def test_delete_user(reqres_client):
     response = reqres_client.delete_user(2)
 
     assert response.status_code == 204
 
 @pytest.mark.users
+@pytest.mark.smoke
 def test_patch_update_user_name(reqres_client):
     payload = {"name": "morpheus"}
     response = reqres_client.patch_user(2, payload)
@@ -63,6 +66,7 @@ def test_patch_update_user_name(reqres_client):
     assert "updatedAt" in data
 
 @pytest.mark.users
+@pytest.mark.smoke
 def test_patch_update_user_job(reqres_client):
     payload = {"job": "zion resident"}
     response = reqres_client.patch_user(2, payload)
@@ -77,6 +81,7 @@ def test_patch_update_user_job(reqres_client):
     assert "updatedAt" in data
 
 @pytest.mark.users
+@pytest.mark.smoke
 def test_patch_update_user_name_and_job(reqres_client):
     payload = {
         "name": "morpheus",

@@ -4,12 +4,11 @@ from schemas.products_schemas import PRODUCT_SCHEMA, PRODUCT_LIST_SCHEMA
 
 import pytest
 
-
 def require_api_key():
     if not os.getenv("REQRES_API_KEY"):
         pytest.skip("REQRES_API_KEY is required for this endpoint")
 
-
+@pytest.mark.products
 def test_get_list_resources(reqres_client):
     response = reqres_client.get_resources()
 
@@ -18,6 +17,7 @@ def test_get_list_resources(reqres_client):
     data = response.json()["data"]
     validate(instance=data, schema=PRODUCT_LIST_SCHEMA)
 
+@pytest.mark.products
 @pytest.mark.parametrize("page_id", [1, 2, 3, 4, 5])
 def test_get_product_list(page_id, reqres_client):
     require_api_key()
@@ -41,6 +41,7 @@ def test_get_product_list(page_id, reqres_client):
             f"Страница {page_id} больше максимальной страницы {total_pages}, но сервер вернул продукты."
         )
 
+@pytest.mark.products
 @pytest.mark.parametrize("product_id", [1, 2, 3, 4, 5])
 def test_get_product(product_id, reqres_client):
     require_api_key()
@@ -52,3 +53,12 @@ def test_get_product(product_id, reqres_client):
     assert data["id"] == product_id
 
     validate(instance=data, schema=PRODUCT_SCHEMA)
+
+@pytest.mark.products
+@pytest.mark.negative
+@pytest.mark.parametrize("product_id", [9999, 10000, 10001])
+def test_get_product_not_found(product_id, reqres_client):
+    require_api_key()
+    response = reqres_client.get_product(product_id)
+
+    assert response.status_code == 404
