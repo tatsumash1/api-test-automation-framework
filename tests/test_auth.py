@@ -58,3 +58,31 @@ def test_register_with_invalid_data(reqres_client, payload):
     validate(instance=data,
             schema=AUTH_ERROR_SCHEMA,
     )
+
+@pytest.mark.auth
+@pytest.mark.negative
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {},
+        {"email": "sydney@fife"},
+        {"password": "pistol"},
+        {"email": "", "password": ""},
+    ],
+    ids=[
+        "empty_payload",
+        "missing_password",
+        "missing_email",
+        "empty_email_and_password",
+    ],
+)
+def test_login_with_invalid_data(reqres_client, payload):
+    response = reqres_client.login(payload)
+
+    assert response.status_code == 400
+
+    data = response.json()
+    assert "error" in data
+    validate(instance=data,
+            schema=AUTH_ERROR_SCHEMA,
+    )
