@@ -1,6 +1,6 @@
 import pytest
 from jsonschema import validate
-from schemas.user_schemas import USER_SCHEMA, USER_LIST_SCHEMA, USER_PUT_SCHEMA, USER_PATCH_NAME_SCHEMA, USER_PATCH_JOB_SCHEMA, USER_PATCH_NAME_AND_JOB_SCHEMA
+from schemas.user_schemas import USER_SCHEMA, USER_LIST_SCHEMA, USER_PUT_SCHEMA, USER_PATCH_NAME_SCHEMA, USER_PATCH_JOB_SCHEMA, USER_PATCH_NAME_AND_JOB_SCHEMA, USER_DELETE_SCHEMA, USER_CREATE_SCHEMA
 
 @pytest.mark.users
 @pytest.mark.parametrize("user_id", [1, 2, 3, 4, 5])
@@ -49,6 +49,8 @@ def test_delete_user(reqres_client):
     response = reqres_client.delete_user(2)
 
     assert response.status_code == 204
+
+    validate(instance=response.json(), schema=USER_DELETE_SCHEMA)
 
 @pytest.mark.users
 @pytest.mark.smoke
@@ -106,3 +108,18 @@ def test_get_invalid_user(user_id, reqres_client):
     response = reqres_client.get_user(user_id)
     
     assert response.status_code == 404
+
+@pytest.mark.users
+def test_create_user(reqres_client):
+    payload = {
+        "name": "morpheus",
+        "job": "leader",
+    }
+
+    response = reqres_client.create_user(payload)
+
+    assert response.status_code == 201
+
+    data = response.json()
+
+    validate(instance=data, schema=USER_CREATE_SCHEMA)
