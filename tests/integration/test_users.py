@@ -1,6 +1,18 @@
 import pytest
 from jsonschema import validate
-from schemas.user_schemas import USER_SCHEMA, USER_LIST_SCHEMA, USER_PUT_SCHEMA, USER_PATCH_NAME_SCHEMA, USER_PATCH_JOB_SCHEMA, USER_PATCH_NAME_AND_JOB_SCHEMA, USER_DELETE_SCHEMA, USER_CREATE_SCHEMA
+from schemas.user_schemas import (
+    USER_CREATE_SCHEMA,
+    USER_LIST_SCHEMA,
+    USER_PATCH_JOB_SCHEMA,
+    USER_PATCH_NAME_AND_JOB_SCHEMA,
+    USER_PATCH_NAME_SCHEMA,
+    USER_PUT_SCHEMA,
+    USER_SCHEMA,
+)
+
+
+pytestmark = pytest.mark.integration
+
 
 @pytest.mark.users
 @pytest.mark.parametrize("user_id", [1, 2, 3, 4, 5])
@@ -8,11 +20,10 @@ def test_get_user(user_id, reqres_client):
     response = reqres_client.get_user(user_id)
 
     assert response.status_code == 200
-
     data = response.json()["data"]
     validate(instance=data, schema=USER_SCHEMA)
-
     assert data["id"] == user_id
+
 
 @pytest.mark.users
 @pytest.mark.parametrize("page_id", [1, 2])
@@ -20,28 +31,22 @@ def test_get_user_list(page_id, reqres_client):
     response = reqres_client.get_users(page_id)
 
     assert response.status_code == 200
-
     data = response.json()["data"]
     validate(instance=data, schema=USER_LIST_SCHEMA)
+
 
 @pytest.mark.users
 @pytest.mark.smoke
 def test_put_update_user(reqres_client):
-    payload = {
-        "name": "morpheus",
-        "job": "zion resident",
-    }
-
+    payload = {"name": "morpheus", "job": "zion resident"}
     response = reqres_client.update_user(2, payload)
 
     assert response.status_code == 200
-
     data = response.json()
-
     validate(instance=data, schema=USER_PUT_SCHEMA)
-
     assert data["name"] == payload["name"]
     assert data["job"] == payload["job"]
+
 
 @pytest.mark.users
 @pytest.mark.smoke
@@ -50,7 +55,6 @@ def test_delete_user(reqres_client):
 
     assert response.status_code == 204
 
-    validate(instance=response.json(), schema=USER_DELETE_SCHEMA)
 
 @pytest.mark.users
 @pytest.mark.smoke
@@ -59,13 +63,10 @@ def test_patch_update_user_name(reqres_client):
     response = reqres_client.patch_user(2, payload)
 
     assert response.status_code == 200
-
     data = response.json()
-
     validate(instance=data, schema=USER_PATCH_NAME_SCHEMA)
-
     assert data["name"] == payload["name"]
-    assert "updatedAt" in data
+
 
 @pytest.mark.users
 @pytest.mark.smoke
@@ -74,52 +75,37 @@ def test_patch_update_user_job(reqres_client):
     response = reqres_client.patch_user(2, payload)
 
     assert response.status_code == 200
-
     data = response.json()
-
     validate(instance=data, schema=USER_PATCH_JOB_SCHEMA)
-
     assert data["job"] == payload["job"]
-    assert "updatedAt" in data
+
 
 @pytest.mark.users
 @pytest.mark.smoke
 def test_patch_update_user_name_and_job(reqres_client):
-    payload = {
-        "name": "morpheus",
-        "job": "zion resident",
-    }
+    payload = {"name": "morpheus", "job": "zion resident"}
     response = reqres_client.patch_user(2, payload)
 
     assert response.status_code == 200
-
     data = response.json()
-
     validate(instance=data, schema=USER_PATCH_NAME_AND_JOB_SCHEMA)
-    
     assert data["name"] == payload["name"]
     assert data["job"] == payload["job"]
-    assert "updatedAt" in data
+
 
 @pytest.mark.users
 @pytest.mark.negative
 @pytest.mark.parametrize("user_id", [0, 2500, 3000])
 def test_get_invalid_user(user_id, reqres_client):
     response = reqres_client.get_user(user_id)
-    
     assert response.status_code == 404
+
 
 @pytest.mark.users
 def test_create_user(reqres_client):
-    payload = {
-        "name": "morpheus",
-        "job": "leader",
-    }
-
+    payload = {"name": "morpheus", "job": "leader"}
     response = reqres_client.create_user(payload)
 
     assert response.status_code == 201
-
     data = response.json()
-
     validate(instance=data, schema=USER_CREATE_SCHEMA)

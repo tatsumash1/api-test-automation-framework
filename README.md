@@ -15,9 +15,12 @@
 │   ├── products_schemas.py    # схемы ресурсов и продуктов
 │   └── user_schemas.py        # схемы пользователей и обновления пользователя
 ├── tests/
-│   ├── test_auth.py           # регистрация и авторизация
-│   ├── test_products.py       # ресурсы и продукты
-│   └── test_users.py          # получение и изменение пользователей
+│   ├── integration/           # тесты с реальными запросами к ReqRes
+│   │   ├── test_auth.py
+│   │   ├── test_products.py
+│   │   └── test_users.py
+│   └── unit/                  # тесты клиента без сети
+│       └── test_reqres_client.py
 ├── conftest.py                # фикстуры base_url, api_session и reqres_client
 ├── pytest.ini                 # пути тестов и pytest-маркеры
 └── requirements.txt
@@ -34,6 +37,7 @@
 - [x] `PATCH /api/users/2` — обновление только `job`
 - [x] `PATCH /api/users/2` — обновление `name` и `job`
 - [x] `DELETE /api/users/2` — удаление пользователя
+- [x] `POST /api/users` — создание пользователя и проверка JSON-схемы
 
 ### Ресурсы и продукты
 
@@ -73,6 +77,12 @@
 
 Схема проверяет структуру и типы полей, а обычные `assert` — бизнес-условия, например соответствие `id` запрошенному пользователю.
 
+## Unit- и integration-тесты
+
+Integration-тесты в `tests/integration/` отправляют реальные запросы к ReqRes и проверяют поведение API.
+
+Unit-тесты в `tests/unit/` не обращаются к сети. Они используют mock-сессию и проверяют, что `ReqresClient` правильно формирует HTTP-метод, URL, заголовки, timeout и JSON-payload.
+
 ## Маркеры pytest
 
 В проекте зарегистрированы маркеры:
@@ -82,6 +92,8 @@
 - `auth` — регистрация и авторизация;
 - `users` — тесты пользователей;
 - `products` — тесты продуктов.
+- `integration` — тесты с реальными запросами к ReqRes;
+- `unit` — изолированные тесты без сетевых запросов.
 
 Примеры запуска:
 
@@ -97,6 +109,15 @@ pytest -m negative -v
 
 # smoke-тесты пользователей
 pytest -m "smoke and users" -v
+
+# только интеграционные тесты
+pytest -m integration -v
+
+# только unit-тесты
+pytest -m unit -v
+
+# unit-тесты без обращения к API
+pytest tests/unit -v
 ```
 
 ## Установка и запуск

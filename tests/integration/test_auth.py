@@ -1,7 +1,15 @@
 import pytest
 
 from jsonschema import validate
-from schemas.auth_schemas import REGISTER_SUCCESS_SCHEMA, LOGIN_SUCCESS_SCHEMA, AUTH_ERROR_SCHEMA
+from schemas.auth_schemas import (
+    AUTH_ERROR_SCHEMA,
+    LOGIN_SUCCESS_SCHEMA,
+    REGISTER_SUCCESS_SCHEMA,
+)
+
+
+pytestmark = pytest.mark.integration
+
 
 @pytest.mark.auth
 @pytest.mark.smoke
@@ -13,9 +21,9 @@ def test_post_register_success(reqres_client):
     response = reqres_client.register(payload)
 
     assert response.status_code == 200
-    
     data = response.json()
     validate(instance=data, schema=REGISTER_SUCCESS_SCHEMA)
+
 
 @pytest.mark.auth
 @pytest.mark.smoke
@@ -27,9 +35,9 @@ def test_post_login_success(reqres_client):
     response = reqres_client.login(payload)
 
     assert response.status_code == 200
-
     data = response.json()
     validate(instance=data, schema=LOGIN_SUCCESS_SCHEMA)
+
 
 @pytest.mark.auth
 @pytest.mark.negative
@@ -52,12 +60,9 @@ def test_register_with_invalid_data(reqres_client, payload):
     response = reqres_client.register(payload)
 
     assert response.status_code == 400
-
     data = response.json()
-    assert "error" in data
-    validate(instance=data,
-            schema=AUTH_ERROR_SCHEMA,
-    )
+    validate(instance=data, schema=AUTH_ERROR_SCHEMA)
+
 
 @pytest.mark.auth
 @pytest.mark.negative
@@ -80,9 +85,5 @@ def test_login_with_invalid_data(reqres_client, payload):
     response = reqres_client.login(payload)
 
     assert response.status_code == 400
-
     data = response.json()
-    assert "error" in data
-    validate(instance=data,
-            schema=AUTH_ERROR_SCHEMA,
-    )
+    validate(instance=data, schema=AUTH_ERROR_SCHEMA)

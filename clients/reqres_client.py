@@ -32,6 +32,9 @@ class ReqresClient:
     def register(self, payload):
         return self._request("POST", "/register", json=payload)
 
+    def create_user(self, payload):
+        return self._request("POST", "/users", json=payload)
+
     def login(self, payload):
         return self._request("POST", "/login", json=payload)
 
