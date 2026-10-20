@@ -2,7 +2,10 @@ import os
 
 import pytest
 from jsonschema import validate
-from schemas.products_schemas import PRODUCT_LIST_SCHEMA, PRODUCT_SCHEMA
+from schemas.products_schemas import (
+    PRODUCT_LIST_SCHEMA,
+    PRODUCT_SCHEMA,
+)
 
 
 pytestmark = pytest.mark.integration
