@@ -7,6 +7,14 @@ from clients.reqres_client import ReqresClient
 
 pytestmark = pytest.mark.unit
 
+@pytest.fixture(scope="session")
+def reqres_client(base_url, api_session, request_timeout):
+    return ReqresClient(
+        base_url=base_url,
+        session=api_session,
+        api_key=os.getenv("REQRES_API_KEY"),
+        timeout=request_timeout,
+    )
 
 @pytest.fixture
 def client_and_session():

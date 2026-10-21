@@ -28,3 +28,7 @@ def api_session():
     yield session
 
     session.close()
+
+@pytest.fixture(scope="session")
+def request_timeout():
+    return float(os.getenv("REQUEST_TIMEOUT", "10"))
