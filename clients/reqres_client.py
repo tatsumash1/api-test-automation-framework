@@ -1,3 +1,5 @@
+import requests
+
 class ReqresClient:
     def __init__(self, base_url, session, api_key=None, timeout=10):
         self.base_url = base_url
@@ -6,13 +8,25 @@ class ReqresClient:
         self.headers = {"x-api-key": api_key} if api_key else {}
 
     def _request(self, method, path, **kwargs):
-        return self.session.request(
-            method,
-            f"{self.base_url}{path}",
-            headers=self.headers,
-            timeout=self.timeout,
-            **kwargs,
-        )
+        url = f"{self.base_url}{path}"
+
+        try:
+            return self.session.request(
+                method,
+                url,
+                headers=self.headers,
+                timeout=self.timeout,
+                **kwargs,
+            )
+        except requests.exception.Timeout as error:
+            raise ApiRequestError(
+                f"Таймаут при запросе {method} {url} "
+                f"после {self.timeout} секунд."
+            ) from error
+        except requests.exception.RequestException as error:
+            raise ApiRequestError(
+                f"Ошибка при запросе {method} {url}: {error}"
+            ) from error
 
     def get_user(self, user_id):
         return self._request("GET", f"/users/{user_id}")
@@ -46,3 +60,7 @@ class ReqresClient:
 
     def delete_user(self, user_id):
         return self._request("DELETE", f"/users/{user_id}")
+
+class ApiRequestError(RuntimeError):
+    """Ошибка выполнения HTTP-запроса."""
+    pass

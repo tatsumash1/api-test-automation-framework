@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 
 import pytest
+import os
 
 from clients.reqres_client import ReqresClient
 
