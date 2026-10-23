@@ -2,8 +2,11 @@ from unittest.mock import Mock
 
 import pytest
 import os
+import requests
 
 from clients.reqres_client import ReqresClient
+
+from clients.reqres_client import ApiRequestError
 
 
 pytestmark = pytest.mark.unit
@@ -90,3 +93,13 @@ def test_client_endpoint_methods(method_name, expected_method, expected_path, cl
     assert call.args[:2] == (expected_method, f"https://example.test/api{expected_path}")
     assert call.kwargs["headers"] == {"x-api-key": "test-key"}
     assert call.kwargs["timeout"] == 5
+
+def test_client_handles_timeout(client_and_session):
+    client, session = client_and_session
+
+    session.request.side_effect = requests.exceptions.ReadTimeout(
+        "server did not respond"
+    )
+
+    with pytest.raises(ApiRequestError, match="Таймаут"):
+        client.get_user(2)
