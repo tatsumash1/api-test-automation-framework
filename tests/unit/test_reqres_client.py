@@ -103,3 +103,19 @@ def test_client_handles_timeout(client_and_session):
 
     with pytest.raises(ApiRequestError, match="Таймаут"):
         client.get_user(2)
+
+def test_client_returns_rate_limit_response(client_and_session):
+    client, session = client_and_session
+
+    response = Mock()
+    response.status_code = 429
+    response.json.return_value = {
+        "error": "too many requests"
+    }
+
+    session.request.return_value = response
+
+    result = client.get_user(2)
+
+    assert result.status_code == 500
+    assert result.json()["error"] == "internal server error"
