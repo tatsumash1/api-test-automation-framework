@@ -119,3 +119,19 @@ def test_client_returns_rate_limit_response(client_and_session):
 
     assert result.status_code == 500
     assert result.json()["error"] == "internal server error"
+
+def test_client_returns_server_error(client_and_session):
+    client, session = client_and_session
+
+    response = Mock()
+    response.status_code = 500
+    response.json.return_value = {
+        "error": "internal server error"
+    }
+
+    session.request.return_value = response
+
+    result = client.get_user(2)
+
+    assert result.status_code == 500
+    assert result.json()["error"] == "internal server error"
